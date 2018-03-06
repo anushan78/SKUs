@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NabSku.Discounts;
+using NabSku.Discounts.Parameters;
+using NabSku.Types;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
-using NabSku;
 
 namespace NabSku.Test
 {
@@ -33,7 +33,7 @@ namespace NabSku.Test
 
             var totalPrice = checkout.Total();
 
-            Assert.AreEqual(1999.96, totalPrice);
+            Assert.AreEqual(2499.95, totalPrice);
         }
 
         private Product AddNexus()

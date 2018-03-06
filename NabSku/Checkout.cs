@@ -1,7 +1,8 @@
-﻿using System;
+﻿using NabSku.Discounts;
+using NabSku.Discounts.Parameters;
+using NabSku.Types;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace NabSku
 {
@@ -25,7 +26,7 @@ namespace NabSku
         {
             _checkoutItems.OrderBy(item => item.SkuCode);
             var uniqueItems = _checkoutItems.Select(it => it.SkuCode).Distinct().ToList();
-            double discountPrice;
+            double discountPrice = 0.0;
 
             uniqueItems.ForEach(delegate (string item) {
                 var product = _checkoutItems.Where(chi => chi.SkuCode == item).First();
@@ -37,30 +38,33 @@ namespace NabSku
                         var buyGetParameters = new BuyXGetYParameters()
                         {
                             DiscountCode = discount.DiscountCode,
+                            DiscountSku = product.SkuCode,
                             MinimumNoOfIems = 3 // configure this to product
                         };
 
                         var buyGetDiscount = discount as BuyXGetYDiscount;
                         buyGetDiscount.DiscountParameters = buyGetParameters;
-                        discountPrice = discount.CalculateDiscountPrice(product.Price, _checkoutItems);
+                        discountPrice += discount.CalculateDiscountPrice(product.Price, _checkoutItems);
                         break;
                     case "BULK":
                         var bulkParameters = new BulkDiscountParameters()
                         {
                             DiscountCode = discount.DiscountCode,
-                            ThresholdItems = 4 // configure this to product
+                            DiscountSku = product.SkuCode,
+                            ThresholdItems = 4, // configure this to product
+                            DiscountUnitPrice = 499.99
                         };
 
                         var bulkDiscount = discount as BulkDiscount;
                         bulkDiscount.DiscountParameters = bulkParameters;
-                        discountPrice = discount.CalculateDiscountPrice(product.Price, _checkoutItems);
+                        discountPrice += discount.CalculateDiscountPrice(product.Price, _checkoutItems);
                         break;
                     default:
                         break;
                 }
             });
 
-            return double.MinValue;
+            return discountPrice;
         }
     }
 }
