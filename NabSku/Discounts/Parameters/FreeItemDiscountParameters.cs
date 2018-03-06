@@ -2,6 +2,7 @@
 {
     public class FreeItemDiscountParameters : DiscountParameterBase
     {
-        public int FreeItem { get; set; }
+        public string FreeItemSku { get; set; }
+        public string EligibleItemSku { get; set; }
     }
 }
